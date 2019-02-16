@@ -1,3 +1,4 @@
+# Imports
 from PIL import Image
 import torch
 import numpy as np
@@ -8,12 +9,22 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import json
 
+
 def load_category_json(file_path):
+    """
+    Load the mapping between categories and names 
+    """
+
     with open(file_path, 'r') as f:
         cat_to_name = json.load(f)
     return cat_to_name
 
+
 def load_data(path = './flowers'):
+    """
+    Load the data in, and create relevant data loaders for use during training and testing
+    """
+
     train_dir = path + '/train'
     valid_dir = path + '/valid'
     test_dir = path + '/test'
@@ -53,6 +64,10 @@ def load_data(path = './flowers'):
 
 
 def classifier(model, hidden_layer_size, architecture):
+    """
+    Define our trainable classifier network to work on top of the pretrained model
+    """
+
     for param in model.parameters():
         param.requires_grad = False
 
@@ -74,11 +89,11 @@ def classifier(model, hidden_layer_size, architecture):
     return Classifier()
 
 
-
 def save_checkpoint(model, save_path, architecture, hidden_layer_size, train_data):
     """
-    Save the checkpoint for the model 
+    Save the checkpoint for a model at the given path 
     """
+
     model.class_to_idx = train_data.class_to_idx
     
     # Transfer the cpu for saving
@@ -93,6 +108,10 @@ def save_checkpoint(model, save_path, architecture, hidden_layer_size, train_dat
     
     
 def load_checkpoint(path):
+    """
+    Load a saved model checkpoint and return the model 
+    """
+
     checkpoint = torch.load(path)
     architecture = checkpoint['architecture']
     hidden_layer_size = checkpoint['hidden_layer_size']
@@ -116,9 +135,12 @@ def load_checkpoint(path):
     
     return model 
 
-
     
 def train_network(epochs, trainloader, validloader, optimiser, device, criterion, model):
+    """
+    Train a model using the given data loaders, optimiser and loss function 
+    """
+
     steps = 0
     print_every = 32
     print('Training start\n')
@@ -194,12 +216,13 @@ def train_network(epochs, trainloader, validloader, optimiser, device, criterion
     print('\nTraining end')
                         
                         
-                        
-
 def process_image(image_path):
-    ''' Scales, crops, and normalizes a PIL image for a PyTorch model,
-        returns an Numpy array
-    '''
+    """
+    Scales, crops, and normalizes a PIL image for a PyTorch model
+    
+    Returns - Numpy array
+    """ 
+
     image = Image.open(image_path)
     
     image_processing = transforms.Compose([
@@ -216,6 +239,10 @@ def process_image(image_path):
 
 
 def imshow(image, ax=None, title=None):
+    """
+    Print the given image
+    """
+    
     if ax is None:
         fig, ax = plt.subplots()
     
@@ -238,9 +265,9 @@ def imshow(image, ax=None, title=None):
 
 
 def predict(image_path, model, cat_to_name, topk = 5, device = 'cpu', gpu = False):
-    ''' 
-    Predict the class (or classes) of an image using a trained deep learning model.
-    '''
+    """
+    Predict the top k class/es for an image using the trained deep learning model
+    """
     
     # TODO: Implement the code to predict the class from an image file
     # Set the model to evaluate 

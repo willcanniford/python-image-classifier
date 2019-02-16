@@ -1,3 +1,4 @@
+# Imports
 import argparse
 import torch
 import numpy as np
@@ -9,16 +10,18 @@ import seaborn as sns
 import utils
 
 
+# Add all the relevant arguments to pass in for the command line 
 a = argparse.ArgumentParser(description='train.py')
 a.add_argument('data_path', action="store", default="./flowers/")
 a.add_argument('--save_dir', dest="save_path", action="store", default="checkpoint.pth")
 a.add_argument('--epochs', dest="epochs", action="store", type=int, default=1)
 a.add_argument('--hidden_layer', dest="hidden_layer", action="store", type=int, default=256)
 a.add_argument('--learning_rate', dest="learning_rate", action="store", type=float, default=0.001)
+# Note the choices here limits to 2 types of base model 
 a.add_argument('--architecture', dest="architecture", action="store", default='densenet121', choices=['densenet121', 'vgg16'])
 a.add_argument('--gpu', dest="gpu", action="store_true", default=True)
 
-
+# Define those arguments as variables for use in the script
 arguments = a.parse_args()
 data_path = arguments.data_path
 epochs = arguments.epochs
@@ -27,14 +30,15 @@ save_path = arguments.save_path
 gpu = arguments.gpu
 hidden_layer = arguments.hidden_layer
 
-# Define the architecture of the model 
+# Define the architecture of the model - this particular version offers 2 types as base
+# If it isn't specified then default
 if type(arguments.architecture) == type(None):
     architecture = 'densenet121'
 else:
     architecture = arguments.architecture 
 
-
 # Load the flower category dictionary
+# This maps the category folder names to class names for output
 cat_to_name = utils.load_category_json('cat_to_name.json')
 
 # Load the data in using the data path provided
